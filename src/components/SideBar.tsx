@@ -32,7 +32,7 @@ export const SideBar = ({ open, onClose, onClearHistory, children }: Props) => {
         </nav>
 
         <div className='self-end'>
-          <Button variant='ghost' onClick={onClearHistory}>
+          <Button variant='ghost' onClick={onClearHistory} disabled={!children}>
             Clear History
           </Button>
         </div>
