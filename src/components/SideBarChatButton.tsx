@@ -1,5 +1,4 @@
 import { Chat } from "@/types/Chat"
-import { useState } from "react";
 import { IconChatLeft, IconShare, IconTrash } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 

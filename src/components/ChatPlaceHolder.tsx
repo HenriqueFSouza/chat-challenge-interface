@@ -8,10 +8,7 @@ type Props = {
 }
 
 export const ChatPlaceHolder = ({ onSelectShortCut }: Props) => {
-  const [selectedOption, setSelectedOption] = useState<{
-    id: number;
-    label: string;
-  } | null>(null)
+  const [selectedOption, setSelectedOption] = useState(0)
 
   return (
 
@@ -30,9 +27,9 @@ export const ChatPlaceHolder = ({ onSelectShortCut }: Props) => {
 
       <div className='flex flex-col space-y-2 items-start' >
         {ShourtCutChatOptions.map((option) => (
-          <Button variant='link' className={`mr-2 w-auto ${selectedOption?.id === option.id ? 'underline' : ''}`} key={option.id} onClick={() => {
+          <Button variant='link' className={`mr-2 w-auto ${selectedOption === option.id ? 'underline' : ''}`} key={option.id} onClick={() => {
             onSelectShortCut(option.message)
-            setSelectedOption(option)
+            setSelectedOption(option.id)
           }}>
             <IconArrowRight className='h-4 w-4 mr-2 text-muted-foreground' />
             {option.label}

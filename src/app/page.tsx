@@ -10,7 +10,6 @@ import { Chat } from '@/types/Chat';
 import { ChatArea } from '@/components/ChatArea';
 import { Footer } from '@/components/Footer';
 import { SideBarChatButton } from '@/components/SideBarChatButton';
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { DeleteAlertDialog } from '@/components/AlertDialog';
 import chatApi from '@/services/api';
 import { toast } from '@/components/ui/use-toast';
@@ -65,7 +64,6 @@ export default function Home() {
     setActiveChatId('')
     setChatList([])
   }
-  console.log('chatList', chatList)
 
   const handleNewChat = () => {
     if (isLoading) return
@@ -148,7 +146,6 @@ export default function Home() {
         </SideBar>
 
         <section className='flex flex-col w-full'>
-
           <ChatArea
             chat={activeChat}
             loading={isLoading}
