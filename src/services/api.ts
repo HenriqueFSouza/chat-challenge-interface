@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const chatApi = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'https://chat-challenge-api.onrender.com',
   withCredentials: true,
 })
 
