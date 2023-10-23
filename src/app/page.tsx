@@ -15,6 +15,13 @@ import chatApi from '@/services/api';
 import { toast } from '@/components/ui/use-toast';
 import { ChatMessage } from '@/types/ChatMessage';
 
+async function getChatHistoryByUser() {
+
+  const response = await chatApi.get<Chat[]>('/chat')
+
+  return response.data
+}
+
 export default function Home() {
   const [open, setOpen] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +29,13 @@ export default function Home() {
   const [activeChatId, setActiveChatId] = useState<string>('')
   const [activeChat, setActiveChat] = useState<Chat>()
   const [deleteChat, setDeleteChat] = useState({ open: false, isClearHistory: false })
+
+  useEffect(() => {
+    getChatHistoryByUser().then(data => {
+      setChatList(data)
+      setActiveChatId(data[0].id)
+    })
+  }, [])
 
   useEffect(() => {
     setActiveChat(chatList?.find(item => item.id === activeChatId))
@@ -36,14 +50,10 @@ export default function Home() {
     let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
     if (chatIndex > -1) {
-
       const response = await chatApi.post<ChatMessage>('/chat', newChatList[chatIndex])
 
-
       if (response.data) {
-        newChatList[chatIndex].messages.push({
-          id: uuid(), body: response.data.body, author: response.data.author
-        })
+        newChatList[chatIndex].messages.push(response.data)
 
       } else {
         toast({
@@ -59,8 +69,10 @@ export default function Home() {
   }
 
 
-  const handleClearHistory = () => {
+  const handleClearHistory = async () => {
     if (isLoading) return
+
+    await chatApi.delete(`/chat/${activeChatId}?deleteAll=true`)
     setActiveChatId('')
     setChatList([])
   }
@@ -83,16 +95,30 @@ export default function Home() {
       }, ...chatList])
 
       setActiveChatId(newChatId)
+      setIsLoading(true)
     } else {
       let newChatList = [...chatList]
       let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
-      newChatList[chatIndex].messages.push({ id: uuid(), body: message, author: 'me' })
+      if (chatIndex > -1) {
+        let formatedMessage = { message_id: uuid(), message_body: message, message_author: 'me' }
+        const response = await chatApi.put(`/chat/${activeChatId}`, formatedMessage)
 
+        if (response.data) {
+          newChatList[chatIndex].messages.push({
+            id: formatedMessage.message_id,
+            body: formatedMessage.message_body,
+            author: 'me'
+          }, {
+            id: response.data.id,
+            body: response.data.body,
+            author: response.data.author
+          })
+        }
+      }
       setChatList(newChatList)
     }
 
-    setIsLoading(true)
   }
 
   const handleSelectChat = (chatId: string) => {
@@ -103,7 +129,7 @@ export default function Home() {
     setActiveChatId(chatId)
   }
 
-  const handleDeleteChat = (chatId: string) => {
+  const handleDeleteChat = async (chatId: string) => {
     if (isLoading) return
     setDeleteChat({ open: false, isClearHistory: false })
 
@@ -111,6 +137,8 @@ export default function Home() {
       handleClearHistory()
       return
     }
+
+    await chatApi.delete(`/chat/${chatId}`)
     let newChatList = [...chatList]
     let chatIndex = newChatList.findIndex(item => item.id === chatId)
 
