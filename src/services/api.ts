@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const chatApi = axios.create({
-  baseURL: 'mongodb://mongo:jMt56w8Jp5OGrMFGQD30@containers-us-west-206.railway.app:7707',
+  baseURL: 'https://chat-challenge-api-production.up.railway.app/',
 })
 
 chatApi.interceptors.request.use(async config => {
