@@ -68,7 +68,6 @@ export default function Home() {
     setIsLoading(false)
   }
 
-
   const handleClearHistory = async () => {
     if (isLoading) return
 
@@ -150,7 +149,16 @@ export default function Home() {
 
   const handleRegerateResponse = () => {
     if (isLoading) return
-    setIsLoading(true)
+
+    let newChatList = [...chatList]
+    let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
+
+    if (chatIndex > -1) {
+      // Show in the screen without the ai response, then add it again to the list
+      newChatList[chatIndex].messages.pop()
+      setChatList(newChatList)
+      setIsLoading(true)
+    }
   }
 
   return (
