@@ -55,7 +55,7 @@ export const Footer = ({ disabled, onSendMessage, onNewChat, onRegenerateRespons
           </div>
 
           <div className='space-y-4 border-t bg-background px-4 h-auto py-4 shadow-lg sm:rounded-t-xl border '>
-            <div className='relative flex max-h-48 overflow-hidden items-center flex-1  bg-background px-8 sm:rounded-md sm:border sm:px-6'>
+            <div className=' flex max-h-48 overflow-hidden items-center flex-1  bg-background px-8 sm:rounded-md sm:border sm:px-6'>
               <Button variant='outline' size='icon' className='rounded-full mr-4' onClick={onNewChat}>
                 <AddIcon />
               </Button>

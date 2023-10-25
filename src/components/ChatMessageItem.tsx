@@ -1,10 +1,17 @@
 import { ChatMessage } from "@/types/ChatMessage"
-import { OpenAIIcon, UserIcon } from "@/components/ui/icons";
+import { IconCopy, OpenAIIcon, UserIcon } from "@/components/ui/icons";
+import { Button } from "./ui/button";
 
 type Props = {
   message: ChatMessage;
 }
 export const ChatMessageItem = ({ message }: Props) => {
+
+  const handleCopy = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    navigator.clipboard.writeText(message.body)
+  }
+
   return (
     <div className='mb-10'>
       <div className='max-w-4xl m-auto flex items-center mb-6'>
@@ -16,7 +23,13 @@ export const ChatMessageItem = ({ message }: Props) => {
           {message.author === 'ai' && <OpenAIIcon />}
         </div>
         <div className='ml-4 flex-1 space-y-2 overflow-hidden px-2'>
-          <p className='mb-2 last:mb-0 text-primary/[0.8]'>{message.body} </p>
+          <p className='mb-2 last:mb-0 text-primary/[0.8]' id='message-body'>{message.body} </p>
+        </div>
+
+        <div>
+          <Button variant='ghost' size='icon' onClick={(e) => handleCopy(e)}>
+            <IconCopy />
+          </Button>
         </div>
       </div>
     </div >

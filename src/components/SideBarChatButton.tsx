@@ -13,9 +13,9 @@ export const SideBarChatButton = ({ chatItem, active, onClick, onDelete }: Props
 
   return (
     <div className='flex-1 overflow-auto'>
-      <div className='h-full flex-1 overflow-auto'>
+      <div className='h-full flex-1 overflow-hidden'>
         <div >
-          <div className='relative flex items-center p-3 h-8 w-[300px] cursor-pointer mb-2 mx-h-30' onClick={() => onClick(chatItem.id)}>
+          <div className='relative flex items-center p-3 h-8 w-[300px] overflow-hidden cursor-pointer mb-2 mx-h-30' onClick={() => onClick(chatItem.id)}>
             <div className='left-0 top-1 flex h-6 w-6 items-center justify-center'>
               <IconChatLeft className=' pt-1' />
             </div>

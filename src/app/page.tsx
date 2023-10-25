@@ -14,6 +14,7 @@ import { DeleteAlertDialog } from '@/components/AlertDialog';
 import chatApi from '@/services/api';
 import { toast } from '@/components/ui/use-toast';
 import { ChatMessage } from '@/types/ChatMessage';
+import { Header } from '@/components/Header';
 
 async function getChatHistoryByUser() {
 
@@ -154,20 +155,13 @@ export default function Home() {
     let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
     if (chatIndex > -1) {
-      // Show in the screen without the ai response, then add it again to the list
-      newChatList[chatIndex].messages.pop()
-      setChatList(newChatList)
-      setIsLoading(true)
+      handleSendMessage(newChatList[chatIndex].messages[newChatList[chatIndex].messages.length - 1].body)
     }
   }
 
   return (
     <div className='flex h-screen flex-col '>
-      <header className='flex items-center justify-between w-full h-16 p-4 border-b bg-gradient-to-b from-background/10 via-background/50 to-background/80'>
-        <Button variant='ghost' size='icon' onClick={() => setOpen(!open)}>
-          <IconLayoutSidebar className='h-5 w-5' />
-        </Button>
-      </header>
+      <Header onOpenSideBar={() => setOpen(!open)} />
       <main className='flex h-full'>
         <SideBar open={open} onClose={() => setOpen(false)} onClearHistory={() => setDeleteChat({ open: true, isClearHistory: true })}>
           {chatList.map(message => (
