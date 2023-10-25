@@ -155,7 +155,7 @@ export default function Home() {
     let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
     if (chatIndex > -1) {
-      handleSendMessage(newChatList[chatIndex].messages[newChatList[chatIndex].messages.length - 1].body)
+      handleSendMessage(newChatList[chatIndex].messages[newChatList[chatIndex].messages.length - 2].body)
     }
   }
 
