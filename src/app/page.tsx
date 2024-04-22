@@ -4,24 +4,13 @@ import { v4 as uuid } from 'uuid'
 
 
 import { SideBar } from '@/components/SideBar'
-import { Button } from '@/components/ui/button'
-import { IconLayoutSidebar } from '@/components/ui/icons'
 import { Chat } from '@/types/Chat';
 import { ChatArea } from '@/components/ChatArea';
 import { Footer } from '@/components/Footer';
 import { SideBarChatButton } from '@/components/SideBarChatButton';
 import { DeleteAlertDialog } from '@/components/AlertDialog';
-import chatApi from '@/services/api';
-import { toast } from '@/components/ui/use-toast';
-import { ChatMessage } from '@/types/ChatMessage';
 import { Header } from '@/components/Header';
 
-async function getChatHistoryByUser() {
-
-  const response = await chatApi.get<Chat[]>('/chat')
-
-  return response.data
-}
 
 export default function Home() {
   const [open, setOpen] = useState(true)
@@ -31,12 +20,6 @@ export default function Home() {
   const [activeChat, setActiveChat] = useState<Chat>()
   const [deleteChat, setDeleteChat] = useState({ open: false, isClearHistory: false })
 
-  useEffect(() => {
-    getChatHistoryByUser().then(data => {
-      setChatList(data)
-      setActiveChatId(data[0].id)
-    })
-  }, [])
 
   useEffect(() => {
     setActiveChat(chatList?.find(item => item.id === activeChatId))
@@ -51,30 +34,16 @@ export default function Home() {
     let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
     if (chatIndex > -1) {
-      const response = await chatApi.post<ChatMessage>('/chat', newChatList[chatIndex])
 
-      if (response.data) {
-        newChatList[chatIndex].messages.push(response.data)
-
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
-        })
-      }
+      newChatList[chatIndex].messages.push({
+        id: uuid(),
+        body: "Here is your generic response :)",
+        author: 'ai'
+      })
     }
 
     setChatList(newChatList)
     setIsLoading(false)
-  }
-
-  const handleClearHistory = async () => {
-    if (isLoading) return
-
-    await chatApi.delete(`/chat/${activeChatId}?deleteAll=true`)
-    setActiveChatId('')
-    setChatList([])
   }
 
   const handleNewChat = () => {
@@ -101,20 +70,15 @@ export default function Home() {
       let chatIndex = newChatList.findIndex(item => item.id === activeChatId)
 
       if (chatIndex > -1) {
-        let formatedMessage = { message_id: uuid(), message_body: message, message_author: 'me' }
-        const response = await chatApi.put(`/chat/${activeChatId}`, formatedMessage)
-
-        if (response.data) {
-          newChatList[chatIndex].messages.push({
-            id: formatedMessage.message_id,
-            body: formatedMessage.message_body,
-            author: 'me'
-          }, {
-            id: response.data.id,
-            body: response.data.body,
-            author: response.data.author
-          })
-        }
+        newChatList[chatIndex].messages.push({
+          id: uuid(),
+          body: message,
+          author: 'me'
+        }, {
+          id: uuid(),
+          body: "Here is your generic response :)",
+          author: 'ai'
+        })
       }
       setChatList(newChatList)
     }
@@ -138,7 +102,6 @@ export default function Home() {
       return
     }
 
-    await chatApi.delete(`/chat/${chatId}`)
     let newChatList = [...chatList]
     let chatIndex = newChatList.findIndex(item => item.id === chatId)
 
@@ -146,6 +109,13 @@ export default function Home() {
 
     setChatList(newChatList)
     setActiveChatId('')
+  }
+
+  const handleClearHistory = async () => {
+    if (isLoading) return
+
+    setActiveChatId('')
+    setChatList([])
   }
 
   const handleRegerateResponse = () => {
